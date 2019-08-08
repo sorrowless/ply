@@ -82,8 +82,7 @@ class WorkingRepo(Repo):
         return commit_hash, patch_name
 
     def _applied_patches(self, new_upper_bound=50):
-        """Return a list of patches that have already been applied to this
-        branch.
+        """Return a list of patches that have already been applied to this branch.
 
         We can have 3 types of commits, upstream (U), applied (A), and new
         (N), which makes the history look like:
@@ -98,6 +97,7 @@ class WorkingRepo(Repo):
         we don't find an applied patch within that number of queries, we
         consider no patches as having been applied.
         """
+
         applied = []
 
         skip = 0
@@ -138,6 +138,7 @@ class WorkingRepo(Repo):
         """Return a patch repo object associated with this working repo via
         the ply.patchrepo git config.
         """
+
         if not hasattr(self, '_patch_repo'):
             if not self.patch_repo_path:
                 raise exc.NoLinkedPatchRepo
@@ -275,7 +276,7 @@ class WorkingRepo(Repo):
 
         if os.path.exists(self._restore_stats_path):
             with open(self._restore_stats_path, 'r') as f:
-                updated, removed = map(int, f.read().strip().split(' '))
+                updated, removed = list(map(int, f.read().strip().split(' ')))
 
         return updated, removed
 
@@ -454,7 +455,7 @@ class WorkingRepo(Repo):
                 with open(from_path) as from_file:
                     original = from_file.read()
                     fixed = fixup_patch.fixup_patch(original)
-                    to_file.write(fixed)
+                    to_file.write(fixed.encode('utf-8'))
 
             # Strip 0001- prefix that git-format-patch uses
             source_path = os.path.join(self.path, filename.split('-', 1)[1])
@@ -690,7 +691,7 @@ class PatchRepo(Repo):
         self.init(self.path)
 
         if not os.path.exists(self.series_path):
-            with open(self.series_path, 'w') as f:
+            with open(self.series_path, 'w') as f:  # noqa
                 pass
 
             self.add('series')
@@ -783,7 +784,7 @@ class PatchRepo(Repo):
             {(dependent, parent): set(file_both_touch1, file_both_touch2, ...)}
         """
         graph = collections.defaultdict(set)
-        for filename, patch_names in self._changes_by_filename().iteritems():
+        for filename, patch_names in self._changes_by_filename().items():
             parent = None
             for dependent in patch_names:
                 if parent:
@@ -796,7 +797,7 @@ class PatchRepo(Repo):
         lines = ['digraph patchdeps {']
 
         for (dependent, parent), changed_files in\
-                self.patch_dependencies().iteritems():
+                self.patch_dependencies().items():
             label = ', '.join(sorted(changed_files))
             lines.append('"%s" -> "%s" [label="%s"];' % (
                 dependent, parent, label))

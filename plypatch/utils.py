@@ -75,7 +75,7 @@ def meaningful_diff(source_path, dest_path, diff_output=None):
                             % proc.returncode)
 
     last_index_perms = None
-    lines = diff_output.split('\n')
+    lines = diff_output.decode().split('\n')
 
     for line in lines:
         line = line.strip()

@@ -5,7 +5,6 @@ import argparse
 import sys
 
 import plypatch
-from plypatch import git
 
 
 def die(msg):
@@ -13,25 +12,26 @@ def die(msg):
 
 
 def exit(msg, code=0):
-    print msg
+    print(msg)
     sys.exit(code)
 
 
 def die_on_conflicts(threeway_merged=True):
-    print "Patch did not apply cleanly.",
+    print("Patch did not apply cleanly.", end=' ')
     if threeway_merged:
-        print "Threeway-merge was completed but resulted in conflicts. To fix:"
+        print("Threeway-merge was completed but resulted in conflicts. "
+              "To fix:")
     else:
-        print "Unable to threeway-merge. To fix:"
-    print
+        print("Unable to threeway-merge. To fix:")
+    print()
     if threeway_merged:
-        print "\t1) Fix conflicts in affected files"
+        print("\t1) Fix conflicts in affected files")
     else:
-        print "\t1) Manually apply '.git/rebase-apply/patch' (git apply" \
-              " --reject usually works) then resolve conflicts"
-    print "\n\t2) `git add` affected files"
-    print "\n\t3) Run `ply resolve` to refresh the patch and"\
-          " apply the rest\n\t   of the patches in the series."
+        print("\t1) Manually apply '.git/rebase-apply/patch' (git apply"
+              " --reject usually works) then resolve conflicts")
+    print("\n\t2) `git add` affected files")
+    print("\n\t3) Run `ply resolve` to refresh the patch and"
+          " apply the rest\n\t   of the patches in the series.")
     sys.exit(1)
 
 
@@ -85,20 +85,20 @@ class CheckCommand(CLICommand):
         except plypatch.exc.NoLinkedPatchRepo:
             die('Not linked to a patch-repo')
 
-        print status.upper()
+        print(status.upper())
 
         if status == 'ok':
             return
 
         if errors['no_file']:
-            print 'Entry in series-file but patch not present:'
+            print('Entry in series-file but patch not present:')
             for patch_name in errors['no_file']:
-                print '\t- %s' % patch_name
+                print('\t- %s' % patch_name)
 
         if errors['no_series_entry']:
-            print 'Patch is present but no entry in series file:'
+            print('Patch is present but no entry in series file:')
             for patch_name in errors['no_series_entry']:
-                print '\t- %s' % patch_name
+                print('\t- %s' % patch_name)
 
 
 class GraphCommand(CLICommand):
@@ -106,7 +106,7 @@ class GraphCommand(CLICommand):
 
     def do(self, args):
         """Graph patch dependencies in DOT format"""
-        print self.working_repo.patch_repo.patch_dependency_dot_graph()
+        print(self.working_repo.patch_repo.patch_dependency_dot_graph())
 
 
 class InitCommand(CLICommand):
@@ -133,7 +133,7 @@ class LinkCommand(CLICommand):
         try:
             self.working_repo.link(args.path)
         except plypatch.exc.AlreadyLinkedToSamePatchRepo:
-            print 'Already linked to this patch-repo'
+            print('Already linked to this patch-repo')
         except plypatch.exc.AlreadyLinkedToDifferentPatchRepo as e:
             die('Already linked to a different patch-repo: %s'
                 % e.patch_repo_path)

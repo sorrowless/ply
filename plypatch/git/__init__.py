@@ -3,8 +3,8 @@ import os
 import subprocess
 import sys
 
-from plypatch import utils
 from plypatch.git import exc
+from plypatch import utils
 
 
 def cmd(fn):
@@ -25,7 +25,7 @@ class Repo(object):
 
     def warn(self, msg):
         if not self.supress_warnings:
-            print >> sys.stderr, 'warning: %s' % msg
+            print('warning: %s' % msg, file=sys.stderr)
 
     @cmd
     def add(self, filename):
@@ -60,14 +60,14 @@ class Repo(object):
         stdout, stderr = proc.communicate()
 
         if not quiet:
-            print stderr
-            print stdout
+            print(stderr)
+            print(stdout)
 
         if proc.returncode == 0:
-            if 'atch already applied' in stdout:
+            if 'atch already applied' in stdout.decode():
                 raise exc.PatchAlreadyApplied
         else:
-            if 'sha1 information is lacking or useless' in stderr:
+            if 'sha1 information is lacking or useless' in stderr.decode():
                 raise exc.PatchBlobSHA1Invalid
             else:
                 raise exc.PatchDidNotApplyCleanly
@@ -143,7 +143,7 @@ class Repo(object):
         stdout, stderr = proc.communicate()
         if proc.returncode != 0:
             raise exc.GitException((proc.returncode, stdout, stderr))
-        lines = [line.strip() for line in stdout.split('\n') if line]
+        lines = [line.strip() for line in stdout.decode().split('\n') if line]
         return lines
 
     @cmd
@@ -156,7 +156,8 @@ class Repo(object):
         stdout, stderr = proc.communicate()
         if proc.returncode != 0:
             raise exc.GitException((proc.returncode, stdout, stderr))
-        filenames = [line.strip() for line in stdout.split('\n') if line]
+        filenames = [
+                line.strip() for line in stdout.decode().split('\n') if line]
         return filenames
 
     @cmd
@@ -189,7 +190,8 @@ class Repo(object):
         stdout, stderr = proc.communicate()
         if proc.returncode != 0:
             raise exc.GitException((proc.returncode, stdout, stderr))
-        filenames = [line.strip() for line in stdout.split('\n') if line]
+        filenames = [
+                line.strip() for line in stdout.decode().split('\n') if line]
         return filenames
 
     @cmd
@@ -220,7 +222,7 @@ class Repo(object):
         stdout, stderr = proc.communicate()
         if proc.returncode != 0:
             raise exc.GitException((proc.returncode, stdout, stderr))
-        return stdout
+        return stdout.decode()
 
     @cmd
     def notes(self, command, message=None):

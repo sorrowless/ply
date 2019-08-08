@@ -1,6 +1,6 @@
-================================
-ply - git-based patch management
-================================
+=================================
+ply3 - git-based patch management
+=================================
 
 
 Description
@@ -10,6 +10,12 @@ Description
 project.  These patches are stored as files in a separate git repositiory so
 that they can themselves be versioned. These patches can then be applied to
 create a patched version of the code to be used for packaging and deployment.
+
+This version is a fork of original ``ply`` utility written by Rick Harris. I
+forked it cause original repo looks abandoned and no issues were addressed for
+like a 4 years. This version is the same as original one but works with
+python3, that's the difference. Upstream version still points to original one
+though.
 
 
 Concepts
