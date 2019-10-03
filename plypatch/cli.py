@@ -164,12 +164,15 @@ class RestoreCommand(CLICommand):
     def add_arguments(self, subparser):
         subparser.add_argument('-m', '--message', action='store_true',
                                help='Prompt for a custom commit message')
+        subparser.add_argument('-n', '--no-commit', action='store_true',
+                               help='Don\'t make a commit in the patch repo')
 
     def do(self, args):
         """Apply the patch series to the the current branch of the
         working-repo"""
         try:
-            self.working_repo.restore(customize_commit_msg=args.message)
+            self.working_repo.restore(customize_commit_msg=args.message,
+                                      no_commit=args.no_commit)
         except plypatch.exc.GitConfigRequired as e:
             die("Required git config '%s' is unset." % e)
         except plypatch.exc.RestoreInProgress:
