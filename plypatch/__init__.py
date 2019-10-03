@@ -295,7 +295,8 @@ class WorkingRepo(Repo):
             raise exc.GitConfigRequired('user.name')
 
     def restore(self, three_way_merge=True, commit_msg=None,
-                fetch_remotes=True, customize_commit_msg=False):
+                fetch_remotes=True, customize_commit_msg=False,
+                no_commit=False):
         """Applies a series of patches to the working repo's current
         branch.
         """
@@ -384,7 +385,9 @@ class WorkingRepo(Repo):
         template = None
 
         # Determine whether we need to prompt the user to edit commit message
-        if commit_msg:
+        if no_commit:
+            pass
+        elif commit_msg:
             if customize_commit_msg:
                 msgs = []
 
@@ -406,7 +409,8 @@ class WorkingRepo(Repo):
                         updated, removed)]
 
         try:
-            self.patch_repo.commit(msgs=msgs, template=template)
+            if not no_commit:
+                self.patch_repo.commit(msgs=msgs, template=template)
         finally:
             if template:
                 os.unlink(template)
