@@ -2,5 +2,5 @@
 *.pyc
 dist/
 .functional-sandbox/
-plypatch.egg-info/
+plypatch3.egg-info/
 build/
